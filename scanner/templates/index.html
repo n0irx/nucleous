@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container my-5">
+        <h1>Nuclei Scan</h1>
+
+        <form action="/scanner/scan/" method="POST">
+            {% csrf_token %}
+            <h3>Input Domain</h3>
+            <div class="form-group">
+                <label for="exampleInputEmail1">Domain</label>
+                <input type="text" class="form-control" name="domain" id="domain" aria-describedby="emailHelp" placeholder="Enter domain">
+            </div>
+            
+            <h3>Select Template</h3>
+            <div style="width: 100%" class="row">
+                {% for category, values in templates.items %}
+                    <div id="{{category}}" class="overflow-auto col-md-4 my-3" style="max-height: 400px;">
+                        <h5 style="text-align: center;">{{ category }}</h5>
+                        {% for template in values %}
+                        <div class="form-group form-check">
+                            <input type="checkbox" name="list_template" class="form-check-input" id="exampleCheck1" value="{{template}}">
+                            <label class="form-check-label" for="exampleCheck1">{{ template }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+{% endblock content %}
