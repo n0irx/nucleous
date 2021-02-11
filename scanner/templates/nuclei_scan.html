@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5">
+
+    <div class="template-scanned">
+        <h2>Tempalte Used: </h2>
+        <div class="list-template-scanned">
+            <ul>
+                {% for nuclei_info in nuclei_infos_as_dict %}
+                <li>
+                    <span class="badge badge-secondary">{{ nuclei_info.id }} </span>
+                    {{ nuclei_info.desc }}
+                    <span class="badge badge-info"> {{ nuclei_info.severity }} </span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="scan-result">
+        <h2>Scan Result: </h2>
+        <div class="list-scan_result">
+            <ul>
+                {% for nuclei_finding in nuclei_findings_as_dict %}
+                <li>
+                    <span class="badge badge-secondary">{{ nuclei_finding.template }} :
+                        {{ nuclei_finding.sub_template }}</span>
+                    <span class="badge badge-info"> {{ nuclei_finding.severity }} </span>
+                    <span>path: {{nuclei_finding.path}}</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+
+</div>
+{% endblock content %}
