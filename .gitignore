@@ -3,3 +3,4 @@ nuclei-template/**/*
 .vscode
 nuclei
 nuclei-templates
+*/**/__pycache__/*
