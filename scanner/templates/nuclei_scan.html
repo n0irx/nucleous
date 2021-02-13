@@ -1,38 +1,134 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container my-5">
 
-    <div class="template-scanned">
-        <h2>Tempalte Used: </h2>
-        <div class="list-template-scanned">
-            <ul>
-                {% for nuclei_info in nuclei_infos_as_dict %}
-                <li>
-                    <span class="badge badge-secondary">{{ nuclei_info.id }} </span>
-                    {{ nuclei_info.desc }}
-                    <span class="badge badge-info"> {{ nuclei_info.severity }} </span>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
+<style>
+.chart-container {
+  position: relative;
+  height: 400px;
+  width: 100%;
+}
+</style>
+
+<div class="container my-5">
 
     <div class="scan-result">
         <h2>Scan Result: </h2>
+
+        <div class="chart-container my-3">
+            <canvas id="finding-chart"></canvas>
+        </div>
+
         <div class="list-scan_result">
-            <ul>
-                {% for nuclei_finding in nuclei_findings_as_dict %}
-                <li>
-                    <span class="badge badge-secondary">{{ nuclei_finding.template }} :
-                        {{ nuclei_finding.sub_template }}</span>
-                    <span class="badge badge-info"> {{ nuclei_finding.severity }} </span>
-                    <span>path: {{nuclei_finding.path}}</span>
-                </li>
-                {% endfor %}
-            </ul>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Template Name</th>
+                        <th scope="col">Vulnerability Name</th>
+                        <th scope="col">Severity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for nuclei_finding in nuclei_findings_as_dict %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{nuclei_finding.template}}</td>
+                        <td>{{nuclei_finding.sub_template}}</td>
+                        <td>{{nuclei_finding.severity}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
+
+
+    <div class="template-scanned">
+        <h2>Template Used: </h2>
+
+        <div class="chart-container my-3">
+            <canvas id="template-used-chart"></canvas>
+        </div>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Template ID</th>
+                        <th scope="col">Template Description</th>
+                        <th scope="col">Template Severity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for nuclei_info in nuclei_infos_as_dict %}
+                    <tr>
+                        <th scope="row">{{forloop.counter}}</th>
+                        <td>{{ nuclei_info.id }}</td>
+                        <td>{{ nuclei_info.desc }}</td>
+                        <td>{{ nuclei_info.severity }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <script>
+        var ctx = document.getElementById('template-used-chart').getContext('2d');
+
+        data = {
+            labels: {{ template_used_data.0|safe }},
+
+            datasets: [{
+                label: 'Template Used',
+                data: {{ template_used_data.1|safe}},
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+
+            }],
+        };
+
+        var chartOptions = {
+            responsive: true,
+            responsiveAnimationDuration: 1,
+            maintainAspectRatio: false,
+            scales: {
+                    yAxes: [
+                        {
+                            ticks: {
+                                min: 0, // it is for ignoring negative step.
+                                stepSize: 1  // if i use this it always set it '1', which look very awkward if it have high value  e.g. '100'.
+                            }
+                        }
+                    ]
+                }
+        };
+
+        console.log(data)
+
+        var template_used_chart = new Chart(ctx, {
+            type: 'bar',
+            data: data,
+            options: chartOptions
+        });
+
+    </script>
 
 
 </div>
